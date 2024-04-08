@@ -3,26 +3,27 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%access_token}}`.
+ * Handles the creation of table `{{%post}}`.
  */
-class m240406_152715_create_access_token_table extends Migration
+class m240407_182535_create_post_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
-    public function up()
+    public function safeUp()
     {
-        $this->createTable('{{%access_token}}', [
+        $this->createTable('{{%post}}', [
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
-            'access_token' => $this->string()->notNull(),
+            'title' => $this->string()->notNull(),
+            'text' => $this->string()->notNull(),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull()
         ]);
 
         $this->addForeignKey(
-            'fk-access_token-user_id',
-            'access_token',
+            'fk-post-user_id',
+            'post',
             'user_id',
             'user',
             'id',
@@ -33,8 +34,8 @@ class m240406_152715_create_access_token_table extends Migration
     /**
      * {@inheritdoc}
      */
-    public function down()
+    public function safeDown()
     {
-        $this->dropTable('{{%access_token}}');
+        $this->dropTable('{{%post}}');
     }
 }

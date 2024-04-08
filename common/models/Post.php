@@ -1,32 +1,37 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
-use common\models\User;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
- * This is the model class for table "access_token".
+ * This is the model class for table "post".
  *
  * @property int $id
  * @property int $user_id
- * @property int $access_token
+ * @property string $title
+ * @property string $text
  * @property int $created_at
  * @property int $updated_at
  *
  * @property User $user
  */
-class AccessToken extends \yii\db\ActiveRecord
+class Post extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public function rules()
     {
-        return '{{%access_token}}';
+        return [
+            [['user_id', 'title', 'text', 'created_at', 'updated_at'], 'required'],
+            [['user_id', 'created_at', 'updated_at'], 'integer'],
+            [['title', 'text'], 'string', 'max' => 255],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+        ];
     }
-
+    
     /**
      * {@inheritdoc}
      */
@@ -36,7 +41,7 @@ class AccessToken extends \yii\db\ActiveRecord
             TimestampBehavior::class,
         ];
     }
-
+    
     /**
      * {@inheritdoc}
      */
@@ -45,7 +50,8 @@ class AccessToken extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
-            'access_token' => 'Access Token',
+            'title' => 'Title',
+            'text' => 'Text',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -59,14 +65,5 @@ class AccessToken extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
-    }
-
-    public function setAccessToken() {
-        $this->access_token = Yii::$app->security->generateRandomString();
-    }
-
-    public static function findByToken($token)
-    {
-        return static::findOne(['access_token' => $token]);
     }
 }
